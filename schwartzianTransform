@@ -1,0 +1,21 @@
+#!/bin/bash
+# Schwart transformation: Effeiciently reorder lines by a custom sequence order
+# The order file was designated to be in the format of 400dataIndOrdering.txt
+# That is, with header and the third column is supposed to be the ordering
+# The 'order' here means the new position, i.e. 2 meaning this row should be at the second row in the newfile
+# Syntax: schwartzianTransform <File to edit> <order file> <output>
+# Ex: bash schwartzianTransform 400dataDosage.dose 400dataIndOrdering.txt 400dataSameOrderwithRef
+
+in=$1
+seq=`awk 'NR>1 {print $3}' $2`
+out=$3
+
+function schwartzianTransform {
+    local file="$1"
+    shift
+    local sequence="$@"
+    echo -n "$sequence" | sed 's/[^[:digit:]][^[:digit:]]*/\
+/g' | paste -d ' ' - "$file" | sort -n | sed 's/^[[:digit:]]* //'
+}
+
+schwartzianTransform $in $seq > $out.txt
