@@ -7,8 +7,9 @@ fileNeedPar=$2
 snpList=$3
 
 
+# Jump the first 5 columns (chr, snp, bp, ref, alt); remove the last comma
+refInd=`awk 'NR>1 {print $2+5}' 400dataIndOrdering.txt | tr "\n" , | rev | cut -c  2- | rev` 
 
-refInd=`awk 'NR>1 {print $2}' 400dataIndOrdering.txt | tr "\n" , | rev | cut -c  2- | rev`
 gunzip -c /home/Bowei/GWAS1/chr1/chr1.block${i}.dosage.gz | cut -f `echo "1,2,3,4,5,$refInd"` > refBlock${i}
 Rscript commonSNPInx.R ${i}
 # Jump the first two column (IDs, and label 'DOSE')
